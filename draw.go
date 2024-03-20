@@ -68,3 +68,30 @@ func NewLine(pt1, pt2 image.Point, color color.RGBA, thickness int) Filter {
 func (l *line) Close() {
 	return
 }
+
+type rectangle struct {
+	rect      image.Rectangle
+	color     color.RGBA
+	thickness int
+}
+
+func NewRectangle(r image.Rectangle, c color.RGBA, thickness int) Filter {
+	return &rectangle{
+		rect:      r,
+		color:     c,
+		thickness: thickness,
+	}
+}
+
+func (r *rectangle) Apply(m *PipeMat) *PipeMat {
+	gocv.Rectangle(m.mat, r.rect, r.color, r.thickness)
+	return m
+}
+
+func (r *rectangle) Name() string {
+	return "rectangle"
+}
+
+func (r *rectangle) Close() {
+	return
+}
