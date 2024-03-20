@@ -2,6 +2,7 @@ package cvpipe
 
 import (
 	"image"
+	"image/color"
 
 	"gocv.io/x/gocv"
 )
@@ -241,4 +242,46 @@ func NewResize(dsize image.Point, fx, fy float64, typ gocv.InterpolationFlags) F
 
 func (r *resize) Close() {
 	return
+}
+
+type morphologyEx struct {
+	op     gocv.MorphType
+	kernel gocv.Mat
+}
+
+func (me *morphologyEx) Apply(m *PipeMat) *PipeMat {
+	gocv.MorphologyEx(*m.mat, m.temp, me.op, me.kernel)
+	m.mat = m.temp
+	return m
+}
+
+func NewMorphology(op gocv.MorphType, shape gocv.MorphShape, ksize image.Point) Filter {
+	kernel := gocv.GetStructuringElement(shape, ksize)
+	return &morphologyEx{
+		op:     op,
+		kernel: kernel,
+	}
+}
+
+func (me *morphologyEx) Close() {
+	me.kernel.Close()
+}
+
+func (me *morphologyEx) Name() string {
+	return "morphologyEx"
+}
+
+type findAndDrawContours struct {
+	mode       gocv.RetrievalMode
+	method     gocv.ContourApproximationMode
+	color      color.RGBA
+	thickness  int
+	contourIdx int
+}
+
+func (c *findAndDrawContours) Apply(m *PipeMat) *PipeMat {
+	contours := gocv.FindContours(*m.mat, c.mode, c.method)
+	defer contours.Close()
+	gocv.DrawContours(m.mat, contours, c.contourIdx, c.color, c.thickness)
+	return m
 }
