@@ -8,7 +8,6 @@ import (
 )
 
 type PipeOptions struct {
-	Name string
 	// Enable saving of intermediate results. Will be overridden by individual step save options.
 	Save bool
 }
@@ -25,6 +24,7 @@ type PipeMat struct {
 }
 
 type Pipe struct {
+	name    string
 	steps   []step
 	opts    PipeOptions
 	results []*PipeMat
@@ -35,8 +35,11 @@ type step struct {
 	opts FilterOptions
 }
 
-func NewPipe(opts PipeOptions) *Pipe {
-	return &Pipe{opts: opts}
+func NewPipe(name string, opts PipeOptions) *Pipe {
+	return &Pipe{
+		name: name,
+		opts: opts,
+	}
 }
 
 func (p *Pipe) Close() {
@@ -69,7 +72,7 @@ func (p *Pipe) Run(m *PipeMat) *PipeMat {
 		}
 
 		if shouldSave {
-			gocv.IMWrite(fmt.Sprintf("data/%v_%03d_%v.jpg", p.opts.Name, i, f.Name()), *m.mat)
+			gocv.IMWrite(fmt.Sprintf("data/%v_%03d_%v.jpg", p.name, i, f.Name()), *m.mat)
 		}
 	}
 	return m

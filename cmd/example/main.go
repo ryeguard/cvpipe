@@ -13,7 +13,7 @@ func main() {
 	mat := cvpipe.NewPipeMat(img)
 	defer mat.Close()
 
-	pipe := cvpipe.NewPipe(cvpipe.PipeOptions{Save: true})
+	pipe := cvpipe.NewPipe("example", cvpipe.PipeOptions{Save: true})
 	defer pipe.Close()
 
 	res := pipe.
