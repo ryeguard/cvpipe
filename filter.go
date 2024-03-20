@@ -231,12 +231,12 @@ func (r *resize) Name() string {
 	return "resize"
 }
 
-func NewResize(dsize image.Point, fx, fy float64, typ gocv.InterpolationFlags) Filter {
+func NewResize(sz image.Point, fx, fy float64, interp gocv.InterpolationFlags) Filter {
 	return &resize{
-		sz:     dsize,
+		sz:     sz,
 		fx:     fx,
 		fy:     fy,
-		interp: typ,
+		interp: interp,
 	}
 }
 
