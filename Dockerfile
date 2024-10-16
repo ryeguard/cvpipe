@@ -1,4 +1,4 @@
-FROM gocv/opencv:4.8.1
+FROM gocv/opencv:4.10.0
 
 ENV GOPATH=/go
 
