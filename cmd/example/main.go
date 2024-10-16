@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 
 	"github.com/ryeguard/cvpipe"
@@ -9,7 +10,12 @@ import (
 )
 
 func main() {
-	img := gocv.IMRead("test.jpg", gocv.IMReadGrayScale)
+	img := gocv.IMRead("./data/test.jpg", gocv.IMReadGrayScale)
+	defer img.Close()
+	if img.Empty() {
+		fmt.Println("Error reading image")
+		return
+	}
 	mat := cvpipe.NewPipeMat(img)
 	defer mat.Close()
 
