@@ -1,6 +1,6 @@
 FROM gocv/opencv:4.8.1
 
-ENV GOPATH /go
+ENV GOPATH=/go
 
 COPY . /go/src/cvpipe
 
