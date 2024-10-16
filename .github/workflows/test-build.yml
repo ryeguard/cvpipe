@@ -8,6 +8,7 @@ on:
 
 jobs:
   test-and-build:
+    name: Test and Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,3 +18,20 @@ jobs:
           context: .
           push: false
           tags: test:latest
+  required-check:
+    # This job is set as the required status check in the repository settings.
+    # If changing this job, make sure to update the required status check under Rulesets.
+    name: Required Check
+    needs: [test-and-build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check if required jobs succeeded
+        run: |
+          if [[ "${{ needs.test-and-build.result }}" == "success" ]]; then
+            echo "All required jobs succeeded"
+            exit 0
+          else
+            echo "One or more required jobs failed"
+            exit 1
+          fi
