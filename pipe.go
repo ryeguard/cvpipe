@@ -83,11 +83,14 @@ type MatOptions struct {
 	Type *gocv.MatType
 }
 
+// NewPipeMat creates a new PipeMat from a gocv.Mat.
+// The gocv.Mat will be cloned and stored in the PipeMat. The original Mat needs to be closed by the caller.
 func NewPipeMat(mat gocv.Mat) *PipeMat {
 	temp := gocv.NewMat()
 	kernel := gocv.NewMat()
+	m := mat.Clone()
 	return &PipeMat{
-		mat:    &mat,
+		mat:    &m,
 		temp:   &temp,
 		kernel: &kernel,
 	}
@@ -110,7 +113,16 @@ func NewPipeMatFromOptions(opts MatOptions) (*PipeMat, error) {
 }
 
 func (m *PipeMat) Close() {
-	m.mat.Close()
-	m.temp.Close()
-	m.kernel.Close()
+	if m.mat != nil {
+		m.mat.Close()
+		m.mat = nil
+	}
+	if m.temp != nil {
+		m.temp.Close()
+		m.temp = nil
+	}
+	if m.kernel != nil {
+		m.kernel.Close()
+		m.kernel = nil
+	}
 }
